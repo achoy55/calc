@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/alex/workspaces/clion/calc/main.cpp
+iostream
+-
+cmath
+-
+string
+-
+functional
+-
+vector
+-
+map
+-
+cctype
+-
+stack
+-
+algorithm
+-
+sstream
+-
+
