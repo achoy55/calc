@@ -1,3 +1,0 @@
-/home/alex/workspaces/clion/calc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/alex/workspaces/clion/calc/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/alex/workspaces/clion/calc/cmake-build-debug/CMakeFiles/calc.dir
