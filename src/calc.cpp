@@ -1,61 +1,7 @@
-#include <iostream>
-#include <cmath>
-#include <string>
-#include <functional>
-#include <map>
-#include <cctype>
-#include <stack>
-#include <algorithm>
+#include "calc.h"
 
-using namespace std;
-
-#define MAX_STACK 10000000
-stack<float> _stack;
+stack<float> _mainStack;
 string errStr;
-
-void calc(const string &expression);
-
-float roundUp(float value);
-
-float eval(const string &rpn);
-
-void printStack(const stack<float>& stack);
-
-bool isFull();
-
-float pop();
-
-void push(float value);
-
-bool isOperator(char op);
-
-int getPriority(char op);
-
-string convertInfix2Postfix(string expression);
-
-void clear(stack<char> &stack);
-
-int main() {
-//    string expression = " -1 + 5 -​ 3";
-//    string expression = "-10  + (8 *  2.5) -  (3 / 1.5)";
-//    string expression = "-10  + (8 *  2.5) -  (3 / 1,5)";
-//    string expression = "1​ + (2​ * (2.5 +​ 2.5​ +​ (3​- 2))) -  (3​ / 1.5)";
-//    string expression = "1.1 + + 2.1 + bc";
-//    string expression = "";
-
-//    string test = "4 12 3 + * 2 / 5 5 + * 100.5 2 * - 2 /";
-//    cout << "TST: " << test << endl;
-
-    string expression = "(-4 * (12.3698 + 3) / 2 * (5 + 5) - (100.54 * 2))/2";
-//    string expression = "(4 * (12 + 3) / 2 * (5 + 5) - (100 * 2))/2";
-
-//    getline(cin, expression);
-//    cout << calc(expression) << endl;
-
-    calc(expression);
-
-    return 0;
-}
 
 void calc(const string &expression) {
     string postfix = convertInfix2Postfix(expression);
@@ -80,7 +26,7 @@ string convertInfix2Postfix(string expression) {
     int i = 0;
     int bracketCnt = 0;
 
-    while (i < expression.size()) {
+    while (i < (int) expression.size()) {
         while (isspace(expression[i])) {
             i++;
         }
@@ -91,7 +37,7 @@ string convertInfix2Postfix(string expression) {
                 outputList += expression[i];
                 i++;
             }
-            if (i + 1 >= expression.size() || !isdigit(expression[i + 1])) {
+            if (i + 1 >= (int) expression.size() || !isdigit(expression[i + 1])) {
                 outputList += ' ';
             }
             continue;
@@ -160,21 +106,19 @@ float eval(const string &rpn) {
     operations['/'] = [](const float &a, const float &b) constexpr { return a / b; };
 
     int i = 0;
-    string token;
-
-    while (i < rpn.length()) {
+    while (i < (int) rpn.length()) {
         while (isspace(rpn[i])) {
             i++;
         }
 
         //Check digits and . and ,
         if (isdigit(rpn[i]) || rpn[i] == '.') {
+            string allNum;
             while (isdigit(rpn[i]) || rpn[i] == '.') {
-                token += rpn[i];
+                allNum += rpn[i];
                 i++;
             }
-            push(stof(token)); //Push into stack number.
-            token = "";
+            push(stof(allNum)); //Push into stack number.
         }
             //Check operators
         else if (isOperator(rpn[i])) {
@@ -184,9 +128,23 @@ float eval(const string &rpn) {
                 if (isdigit(rpn[i])) {
                     push(-stof(&rpn[i]));
                 }
-            } else {
-                float result = operations[rpn[i]](pop(), pop());
+            } else if (rpn[i] == '/') {
+                float v1 = pop();
+                float v2 = pop();
+                if (v1 == 0 || v2 == 0) {
+                    cerr << "Division by zero" << endl;
+                    break;
+                }
+                float result = operations[rpn[i]](v2, v1);
                 push(result);
+//                cout << "Val: " << v1 <<", " << v2 << ", res: " << result << endl;
+            } else {
+                float v1 = pop();
+                float v2 = pop();
+                float result = operations[rpn[i]](v2, v1);
+//                float result = operations[rpn[i]](pop(), pop());
+                push(result);
+//                cout << "Val: " << v1 <<", " << v2 << ", res: " << result << endl;
             }
             i++;
         } else {
@@ -198,7 +156,7 @@ float eval(const string &rpn) {
     return pop();
 }
 
-void printStack(const stack<float>& stack) {
+void printStack(const stack<float> &stack) {
     cout << "[";
     for (std::stack<float> dump = stack; !dump.empty(); dump.pop())
         cout << dump.top() << ',';
@@ -206,17 +164,17 @@ void printStack(const stack<float>& stack) {
 }
 
 bool isFull() {
-    return _stack.size() >= MAX_STACK - 1;
+    return _mainStack.size() >= MAX_STACK - 1;
 }
 
 void push(float value) {
     if (isFull()) return;
-    _stack.push(value);
+    _mainStack.push(value);
 }
 
 float pop() {
-    float value = _stack.top();
-    _stack.pop();
+    float value = _mainStack.top();
+    _mainStack.pop();
     return value;
 }
 
