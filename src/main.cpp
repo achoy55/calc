@@ -4,10 +4,11 @@ int main() {
     Expression expr;
     string expression;
 
-    getline(cin, expression);
-
-    float result = expr.calc(expression);
-    cout << "Result: " << result << endl;
+    while(getline(cin, expression)) {
+        if (expression == "q") break;
+        float result = expr.calc(expression);
+        cout << "Result: " << result << endl;
+    }
 
     return 0;
 }

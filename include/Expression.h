@@ -9,6 +9,7 @@
 #include <cctype>
 #include <stack>
 #include <algorithm>
+#include <gtest/gtest_prod.h>
 
 using namespace std;
 
@@ -21,6 +22,7 @@ class Expression {
     string m_outputList;
 
 private:
+    FRIEND_TEST(ExpressionTest, calc);
     const string &convertInfix2Postfix(const string &expression);
 
     float eval(const string &rpn);

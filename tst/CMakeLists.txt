@@ -1,0 +1,16 @@
+set(BINARY ${CMAKE_PROJECT_NAME}_tst)
+
+#find_library(COMMON_LIB call_lib HINTS /usr/lib/x86_64-linux-gnu)
+#target_link_libraries(${COMMON_LIB})
+
+option(BUILD_TESTS "Build the tests" ON)
+if (BUILD_TESTS)
+    enable_testing()
+    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    include_directories(${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})
+    include_directories(${COMMON_INCLUDES} ${SRC_FILES})
+    file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/tst/*.cpp)
+    add_executable(runUnitTests ${TEST_SRC_FILES})
+    target_link_libraries(runUnitTests ${CMAKE_PROJECT_NAME}_lib gtest gmock gtest_main)
+    add_test(UnitTests runUnitTests)
+endif ()
