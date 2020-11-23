@@ -1,6 +1,5 @@
 #include "iostream"
 //#include "gtest/gtest.h"
-//#include "calc.h"
 
 
 //TEST(convertInfix2Postfix, convertInfix2Postfix) {

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
-set(PROJECT_NAME calc)
-project($PROJECT_NAME)
+
+project(calc)
 
 set(CMAKE_CXX_FLAGS "-g -Wall")
 set(CMAKE_CXX_STANDARD 17)
@@ -13,7 +13,7 @@ list(REMOVE_ITEM SRC_FILES src/main.cpp)
 
 set(BINARY ${CMAKE_PROJECT_NAME})
 
-add_executable(calc src/main.cpp include/calc.h tst/test_calc.cpp src/calc.cpp src/Expression.cpp include/Expression.h)
+add_executable(calc src/main.cpp tst/test_calc.cpp src/Expression.cpp include/Expression.h)
 
 ########################################
 # Testing

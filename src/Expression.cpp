@@ -1,18 +1,16 @@
 #include "Expression.h"
 
-Expression::Expression()
-//: m_mainStack(),
-//        m_opStack(),
-//        m_errStr(),
-//        m_outputList()
-{}
+Expression::Expression() :
+        m_mainStack(),
+        m_opStack(),
+        m_errStr(),
+        m_outputList() {}
 
-Expression::~Expression() {
-}
+Expression::~Expression() {}
 
 float Expression::calc(const string &expression) {
     string postfix = convertInfix2Postfix(expression);
-    cout << "RPN: " << postfix << endl;
+//    cout << "RPN: " << postfix << endl;
 
     if (postfix.empty() && !m_errStr.empty()) {
         cerr << m_errStr << endl;
@@ -20,12 +18,12 @@ float Expression::calc(const string &expression) {
     }
 
     float result = eval(postfix);
-    cout << "Result: " << result << ", rounded: " << roundUp(result) << endl;
+//    cout << "Result: " << result << ", rounded: " << roundUp(result) << endl;
     return roundUp(result);
 }
 
 const string &Expression::convertInfix2Postfix(const string &expression) {
-    if (expression.empty()) throw invalid_argument("Expression is empty");;
+    if (expression.empty()) throw invalid_argument("Expression is empty");
 
 //    replaceComma2Period(expression); // replace comma to period
 
@@ -44,7 +42,8 @@ const string &Expression::convertInfix2Postfix(const string &expression) {
                 m_outputList += expression[i];
                 i++;
             }
-            if (i + 1 >= (int) expression.size() || !isdigit(expression[i + 1])) {
+
+            if (i + 1 >= (int) expression.length() || !isdigit(expression[i])) {
                 m_outputList += ' ';
             }
             continue;
@@ -79,8 +78,7 @@ const string &Expression::convertInfix2Postfix(const string &expression) {
                 }
 
                 m_errStr = "Invalid input, string contains invalid symbols " + wrongSymbols;
-
-                clear();
+                clearOpStack();
                 break;
             }
         }
@@ -89,10 +87,10 @@ const string &Expression::convertInfix2Postfix(const string &expression) {
 
     if (bracketCnt < 0) {
         m_errStr = "There is close parenthesis without open";
-        clear();
+        clearOpStack();
     }
     if (bracketCnt) {
-        clear();
+        clearOpStack();
         m_errStr = "There are more open parentheses than closing ones";
         m_outputList.clear();
     }
@@ -113,7 +111,7 @@ float Expression::eval(const string &rpn) {
     operations['/'] = [](const float &a, const float &b) constexpr { return a / b; };
 
     int i = 0;
-    while (i < (int) rpn.size()) {
+    while (i < (int) rpn.length()) {
         while (isspace(rpn[i])) {
             i++;
         }
@@ -143,14 +141,9 @@ float Expression::eval(const string &rpn) {
                 }
                 float result = operations[rpn[i]](v2, v1);
                 push(result);
-//                cout << "Val: " << v1 <<", " << v2 << ", res: " << result << endl;
             } else {
-//                float v1 = pop();
-//                float v2 = pop();
-//                float result = operations[rpn[i]](v2, v1);
                 float result = operations[rpn[i]](pop(), pop());
                 push(result);
-//                cout << "Val: " << v1 <<", " << v2 << ", res: " << result << endl;
             }
             i++;
         } else {
@@ -214,7 +207,7 @@ int Expression::getPriority(char op) {
     }
 }
 
-void Expression::clear() {
+void Expression::clearOpStack() {
     m_outputList.clear();
     while (!m_opStack.empty())
         m_opStack.pop();
@@ -223,3 +216,7 @@ void Expression::clear() {
 const string &Expression::getErrStr() const {
     return m_errStr;
 }
+
+//void Expression::replaceComma2Period(const string &expr) {
+////    replace(expression.begin(), expression.end(), ',', '.');
+//}

@@ -37,7 +37,9 @@ private:
 
     int getPriority(char op);
 
-    void clear();
+    void clearOpStack();
+
+//    void replaceComma2Period(const string &expr);
 
 public:
     Expression();
