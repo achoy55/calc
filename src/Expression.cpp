@@ -14,7 +14,7 @@ float Expression::calc(const string &expression) {
 
     if (postfix.empty() && !m_errStr.empty()) {
         cerr << m_errStr << endl;
-        return -1;
+        return 0;
     }
 
     float result = eval(postfix);
@@ -22,11 +22,15 @@ float Expression::calc(const string &expression) {
     return roundUp(result);
 }
 
-const string &Expression::convertInfix2Postfix(const string &expression) {
-    if (expression.empty()) throw invalid_argument("Expression is empty");
+const string &Expression::convertInfix2Postfix(const string &infix) {
+    if (infix.empty()) {
+        m_errStr = "Expression is empty";
+        return m_outputList;
+    }
 
-//    replaceComma2Period(expression); // replace comma to period
+    string expression = replaceComma2Period(infix); // replace comma to period
 
+    clearOpStack();
     m_errStr = "";
     int i = 0;
     int bracketCnt = 0;
@@ -48,8 +52,17 @@ const string &Expression::convertInfix2Postfix(const string &expression) {
             }
             continue;
         } else if (isOperator(expression[i])) {
-            if (expression[i] == '-' && (expression[i - 1] == '(' || m_outputList.empty())) {
+            if ((expression[i] == '-' && (expression[i - 1] == '(' || m_outputList.empty()))
+//                || (expression[i] == '-' &&
+//                    (isOperator(expression[i - 1]) || isOperator(expression[i + 1]) || isdigit(expression[i + 1])))
+                    ) {
                 m_outputList.push_back('~');
+            } else if (expression[i] == expression[i + 1]) {
+                m_errStr = "Invalid Expression, identical operators < ";
+                m_errStr += expression[i];
+                m_errStr += " > in a row!";
+                clearOpStack();
+                break;
             } else {
                 while (!m_opStack.empty() && m_opStack.top() != '(' &&
                        getPriority(m_opStack.top()) >= getPriority(expression[i])) {
@@ -92,7 +105,6 @@ const string &Expression::convertInfix2Postfix(const string &expression) {
     if (bracketCnt) {
         clearOpStack();
         m_errStr = "There are more open parentheses than closing ones";
-        m_outputList.clear();
     }
 
     while (!m_opStack.empty()) {
@@ -128,10 +140,17 @@ float Expression::eval(const string &rpn) {
         else if (isOperator(rpn[i])) {
             // if operator is minus unary
             if (rpn[i] == '~') {
-                ++i; // next operand
-                if (isdigit(rpn[i])) {
-                    push(-stof(&rpn[i]));
+                ++i;
+                string holeNum;
+                while (isdigit(rpn[i]) || rpn[i] == '.') {
+                    holeNum += rpn[i];
+                    ++i;
                 }
+                if (holeNum.empty()) {
+                    cerr << "Unary operator, is not a number" << endl;
+                    break;
+                }
+                push(-stof(holeNum.c_str()));
             } else if (rpn[i] == '/') {
                 float v1 = pop();
                 float v2 = pop();
@@ -217,6 +236,8 @@ const string &Expression::getErrStr() const {
     return m_errStr;
 }
 
-//void Expression::replaceComma2Period(const string &expr) {
-////    replace(expression.begin(), expression.end(), ',', '.');
-//}
+string Expression::replaceComma2Period(const string &expression) {
+    string tmp = expression;
+    replace(tmp.begin(), tmp.end(), ',', '.');
+    return tmp;
+}

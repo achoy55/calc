@@ -6,35 +6,32 @@
 #include "../googletest/googlemock/include/gmock/gmock-matchers.h"
 
 using ::testing::MatchesRegex;
+using ::testing::ContainsRegex;
 
 using namespace std;
 
+const string &regex = "[A-Za-z()]";
+
+//Check expression xontains unsupported symbols
 TEST(ExpressionTest, calc) {
     Expression expr;
-    string infixExpr = "";
-//    string postfix = expr.convertInfix2Postfix(infixExpr);
-    string postfix = "5646";
-
-    ASSERT_THAT(postfix, MatchesRegex("\\(\\)"));
-
-//    EXPECT_EQ(postfix, expected);
+    string infixExpr = "2+3*(2-1)/2";
+    string postfix = expr.convertInfix2Postfix(infixExpr);
+//    postfix += "asas";
+    cout << postfix << endl;
+    ASSERT_THAT(postfix, Not(ContainsRegex(regex)));
 }
 
-//TEST(eval, DivideByZero) {
-//    string rpm = "";
-//    eval(rpn);
-//    EXPECT_EQ("", "");
-//}
-
-//TEST(eval, RPN) {
-//    string rpm = "";
-//    eval(rpm);
-//    EXPECT_EQ("", "");
-//}
-
-//TEST(calc, DivideByZero) {
-//    EXPECT_EQ(0, i);
-//}
+TEST(ExpressionTest1, calc) {
+    Expression expr;
+//    string infixExpr = "(4 * (12 + 3) / 2 * (50 + 5) - (250 * 2))/2"; // 575
+//    string infixExpr = "(4 * (12 + 3) / 2 * (50 + 5) - (250.3 * 2))/2"; // 574.7
+    string infixExpr = "-10  + (8 * 2.5) -  (3 / 1.5)"; // 8
+    float result = expr.calc(infixExpr);
+//    EXPECT_EQ(result, 575);
+//    EXPECT_EQ(result, 574.7);
+    EXPECT_EQ(result, 8);
+}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

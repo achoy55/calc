@@ -51,3 +51,20 @@ Thumbs.db
 *.mov
 *.wmv
 
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+/tst/CMakeFiles/
+/src/CMakeFiles/
+/googletest/
+/src/cmake_install.cmake
+/src/Makefile
+/tst/cmake_install.cmake
+/tst/CTestTestfile.cmake
+/tst/Makefile
+/src/calc
+/src/libcalc_lib.a
+/CMakeFiles/
+/lib/
+/tst/runUnitTests
+/build/

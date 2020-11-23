@@ -41,7 +41,7 @@ private:
 
     void clearOpStack();
 
-//    void replaceComma2Period(const string &expr);
+    string replaceComma2Period(const string &expression);
 
 public:
     Expression();
